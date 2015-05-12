@@ -577,7 +577,7 @@ public class Main extends javax.swing.JFrame {
         jTextFieldNombreProducto.setText("");
         jTextFieldMarca.setText("");
         jTextFieldTalla.setText("");
-        jTextFieldPrecio.setText(String.valueOf(0));
+        jTextFieldPrecio.setText(String.valueOf(""));
         jTextFieldCantdDisponibles.setText("");
         jTextAreaDescripcion.setText("");
         

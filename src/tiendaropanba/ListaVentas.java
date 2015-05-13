@@ -8,6 +8,10 @@ public class ListaVentas {
     public List<Ventas> getListaVentas() {
         return listaVentas;
     }
+
+    public void setListaVentas(List<Ventas> listaVentas) {
+        this.listaVentas = listaVentas;
+    }
     
     
 }

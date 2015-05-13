@@ -32,6 +32,8 @@ public class Main extends javax.swing.JFrame {
     private TicketTableModel ticketTableModel;
     private static EntityManager entityManager;
     private Query consultaProductos;
+    private Query consultaVentas;
+    Ventas venta = new Ventas();
     
     boolean modificado;
 
@@ -56,6 +58,10 @@ public class Main extends javax.swing.JFrame {
         entityManager = Persistence.createEntityManagerFactory("TiendaRopaNbaPU").createEntityManager();
         consultaProductos = entityManager.createNamedQuery("Producto.findAll");
         listaProductos.setListaProductos(consultaProductos.getResultList());
+        
+        entityManager = Persistence.createEntityManagerFactory("TiendaRopaNbaPU").createEntityManager();
+        consultaVentas = entityManager.createNamedQuery("Ventas.findAll");
+        listaVentas.setListaVentas(consultaVentas.getResultList());
                 
         inventarioTableModel = new InventarioTableModel(listaProductos);
         jTable1.setModel(inventarioTableModel);
@@ -358,6 +364,11 @@ public class Main extends javax.swing.JFrame {
         jLabel2.setText("Cantidad:");
 
         jButtonAñadir.setText("Añadir");
+        jButtonAñadir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAñadirActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("Finalizar venta");
 
@@ -588,6 +599,29 @@ public class Main extends javax.swing.JFrame {
         jTextFieldCantdDisponibles.setEditable(false);
         jTextAreaDescripcion.setEditable(false);
     }//GEN-LAST:event_jButtonCancelarActionPerformed
+
+    private void jButtonAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAñadirActionPerformed
+        Producto producto = (Producto)jComboBox1.getSelectedItem();
+        
+        double precio = producto.getPrecio().doubleValue();
+
+        venta.setIdProducto(producto);
+        venta.setCantidad(Integer.valueOf(jTextFieldCantidad.getText()));
+        venta.setPrecio(precio * Double.valueOf(jTextFieldCantidad.getText()));
+        
+              
+        entityManager.getTransaction().begin(); 
+        entityManager.persist(venta); 
+        entityManager.getTransaction().commit();
+        
+        listaVentas.getListaVentas().add(venta);
+        ventaTableModel.fireTableRowsUpdated(jTable2.getSelectedRow(), jTable2.getSelectedRow());
+        
+        jTable2.setModel(ventaTableModel);
+        jTable2.getColumnModel().getColumn(2).setCellRenderer(new PrecioRenderer());
+        
+        
+    }//GEN-LAST:event_jButtonAñadirActionPerformed
 
     /**
      * @param args the command line arguments

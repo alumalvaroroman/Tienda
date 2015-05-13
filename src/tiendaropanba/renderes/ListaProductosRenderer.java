@@ -13,7 +13,7 @@ public class ListaProductosRenderer extends DefaultListCellRenderer {
         Producto producto = (Producto)value;
         setText(producto.getNombreProducto());
         if(isSelected){
-            this.setBackground(Color.blue);
+            this.setBackground(Color.CYAN);
             
         }else{
             this.setBackground(Color.white);

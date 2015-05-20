@@ -145,6 +145,7 @@ public class Main extends javax.swing.JFrame {
         jTextFieldNombreProducto = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButtonCancelar = new javax.swing.JButton();
+        jComboBoxTalla = new javax.swing.JComboBox();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
@@ -248,6 +249,14 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        jComboBoxTalla.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "S", "M", "L", "XL", "XXL" }));
+        jComboBoxTalla.setEnabled(false);
+        jComboBoxTalla.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxTallaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -289,7 +298,10 @@ public class Main extends javax.swing.JFrame {
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextFieldCantdDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldTalla, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jTextFieldTalla, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jComboBoxTalla, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jTextFieldNombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(127, 127, 127)))
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -322,7 +334,8 @@ public class Main extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
-                            .addComponent(jTextFieldTalla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jTextFieldTalla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxTalla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -492,7 +505,8 @@ public class Main extends javax.swing.JFrame {
         jTable1.setEnabled(false);
         jTextFieldNombreProducto.setEditable(true);
         jTextFieldMarca.setEditable(true);
-        jTextFieldTalla.setEditable(true);
+        jComboBoxTalla.setEnabled(true);
+        jTextFieldTalla.setEditable(false);
         jTextFieldPrecio.setEditable(true);
         jTextFieldCantdDisponibles.setEditable(true);
         jTextAreaDescripcion.setEditable(true);
@@ -503,6 +517,8 @@ public class Main extends javax.swing.JFrame {
         jTextFieldPrecio.setText(String.valueOf(0));
         jTextFieldCantdDisponibles.setText("");
         jTextAreaDescripcion.setText("");
+        
+        
 
     }//GEN-LAST:event_jButtonNuevoActionPerformed
 
@@ -512,24 +528,29 @@ public class Main extends javax.swing.JFrame {
         jTable1.setEnabled(false);
         jTextFieldNombreProducto.setEditable(true);
         jTextFieldMarca.setEditable(true);
-        jTextFieldTalla.setEditable(true);
+        jComboBoxTalla.setEnabled(true);
+        jTextFieldTalla.setEditable(false);
         jTextFieldPrecio.setEditable(true);
         jTextFieldCantdDisponibles.setEditable(true);
         jTextAreaDescripcion.setEditable(true);
     }//GEN-LAST:event_jButtonEditarActionPerformed
 
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
+        
+        
         int indexSelectedRow = jTable1.getSelectedRow();
         
         jTable1.setEnabled(true);
 
         jTextFieldNombreProducto.setEditable(false);
         jTextFieldMarca.setEditable(false);
+        jComboBoxTalla.setEnabled(false);
         jTextFieldTalla.setEditable(false);
         jTextFieldPrecio.setEditable(false);
         jTextFieldCantdDisponibles.setEditable(false);
         jTextAreaDescripcion.setEditable(false);
         
+                
         if (!modificado) {
         Producto producto = new Producto();
         
@@ -602,6 +623,7 @@ public class Main extends javax.swing.JFrame {
         
         jTextFieldNombreProducto.setEditable(false);
         jTextFieldMarca.setEditable(false);
+        jComboBoxTalla.setEnabled(false);
         jTextFieldTalla.setEditable(false);
         jTextFieldPrecio.setEditable(false);
         jTextFieldCantdDisponibles.setEditable(false);
@@ -640,6 +662,26 @@ public class Main extends javax.swing.JFrame {
             NumberFormat formato = NumberFormat.getCurrencyInstance();
             jLabel10.setText(String.valueOf(formato.format(total)));
     }//GEN-LAST:event_jTabbedPane1StateChanged
+
+    private void jComboBoxTallaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTallaActionPerformed
+        switch(jComboBoxTalla.getSelectedIndex()){
+            case 0:
+                jTextFieldTalla.setText("S");
+                break;
+            case 1:
+                jTextFieldTalla.setText("M");
+                break;
+            case 2:
+                jTextFieldTalla.setText("L");
+                break;
+            case 3:
+                jTextFieldTalla.setText("XL");
+                break;
+            case 4:
+                jTextFieldTalla.setText("XXL");
+                break;
+        }
+    }//GEN-LAST:event_jComboBoxTallaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -687,6 +729,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButtonNuevaVenta;
     private javax.swing.JButton jButtonNuevo;
     private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBoxTalla;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;

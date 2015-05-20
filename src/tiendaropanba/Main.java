@@ -6,6 +6,7 @@
 package tiendaropanba;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
@@ -36,6 +37,8 @@ public class Main extends javax.swing.JFrame {
     Ventas venta = new Ventas();
     
     boolean modificado;
+    
+    double total;
 
     /**
      * Creates new form Inventario
@@ -100,7 +103,7 @@ public class Main extends javax.swing.JFrame {
         
     }
     
-    public void insertProducto(){     
+    public void insertProducto(Producto producto){     
         entityManager.getTransaction().begin();
         entityManager.persist(producto);
         entityManager.getTransaction().commit();
@@ -161,6 +164,11 @@ public class Main extends javax.swing.JFrame {
 
         jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
         jTabbedPane1.setToolTipText("");
+        jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jTabbedPane1StateChanged(evt);
+            }
+        });
 
         jTextFieldPrecio.setEditable(false);
 
@@ -375,7 +383,7 @@ public class Main extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel5.setText("TOTAL:");
 
-        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel10.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
 
         jButtonNuevaVenta.setText("Nueva venta");
 
@@ -397,14 +405,13 @@ public class Main extends javax.swing.JFrame {
                             .addComponent(jButtonAñadir))
                         .addGap(38, 38, 38)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel5)
-                                .addComponent(jButton1))
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jButton1)
                             .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jButtonNuevaVenta))
-                .addContainerGap(148, Short.MAX_VALUE))
+                .addContainerGap(127, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -512,16 +519,8 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonEditarActionPerformed
 
     private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
-          
-        producto.setNombreProducto(jTextFieldNombreProducto.getText());
-        producto.setMarca(jTextFieldMarca.getText());
-        producto.setTalla(jTextFieldTalla.getText());
-        producto.setColor(null);
-        producto.setPrecio(BigDecimal.valueOf(Double.valueOf(jTextFieldPrecio.getText())));
-        producto.setCantidadesDisponibles(Integer.valueOf(jTextFieldCantdDisponibles.getText()));
-        producto.setDescripcion(jTextAreaDescripcion.getText());
-
-        inventarioTableModel.fireTableRowsUpdated(jTable1.getSelectedRow(), jTable1.getSelectedRow());
+        int indexSelectedRow = jTable1.getSelectedRow();
+        
         jTable1.setEnabled(true);
 
         jTextFieldNombreProducto.setEditable(false);
@@ -530,12 +529,21 @@ public class Main extends javax.swing.JFrame {
         jTextFieldPrecio.setEditable(false);
         jTextFieldCantdDisponibles.setEditable(false);
         jTextAreaDescripcion.setEditable(false);
-
-        int indexSelectedRow = jTable1.getSelectedRow();
         
         if (!modificado) {
-            insertProducto();
-            inventarioTableModel.fireTableRowsInserted(listaProductos.getListaProductos().size()-1, listaProductos.getListaProductos().size()-1);
+        Producto producto = new Producto();
+        
+        producto.setNombreProducto(jTextFieldNombreProducto.getText());
+        producto.setMarca(jTextFieldMarca.getText());
+        producto.setTalla(jTextFieldTalla.getText());
+        producto.setColor(null);
+        producto.setPrecio(Double.valueOf(jTextFieldPrecio.getText()));
+        producto.setCantidadesDisponibles(Integer.valueOf(jTextFieldCantdDisponibles.getText()));
+        producto.setDescripcion(jTextAreaDescripcion.getText());
+        
+        insertProducto(producto);
+        inventarioTableModel.fireTableRowsUpdated(jTable1.getSelectedRow(), jTable1.getSelectedRow());
+        inventarioTableModel.fireTableRowsInserted(listaProductos.getListaProductos().size()-1, listaProductos.getListaProductos().size()-1);
             
         } else{
             Producto producto = listaProductos.getListaProductos().get(indexSelectedRow);
@@ -543,7 +551,7 @@ public class Main extends javax.swing.JFrame {
             producto.setMarca(jTextFieldMarca.getText());
             producto.setTalla(jTextFieldTalla.getText());
             producto.setColor(null);
-            producto.setPrecio(BigDecimal.valueOf(Double.valueOf(jTextFieldPrecio.getText())));
+            producto.setPrecio(Double.valueOf(jTextFieldPrecio.getText()));
             producto.setCantidadesDisponibles(Integer.valueOf(jTextFieldCantdDisponibles.getText()));
             producto.setDescripcion(jTextAreaDescripcion.getText());
             
@@ -603,13 +611,12 @@ public class Main extends javax.swing.JFrame {
     private void jButtonAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAñadirActionPerformed
         Producto producto = (Producto)jComboBox1.getSelectedItem();
         
-        double precio = producto.getPrecio().doubleValue();
+        Ventas venta = new Ventas();
 
         venta.setIdProducto(producto);
         venta.setCantidad(Integer.valueOf(jTextFieldCantidad.getText()));
-        venta.setPrecio(precio * Double.valueOf(jTextFieldCantidad.getText()));
-        
-              
+        venta.setPrecio(producto.getPrecio() * Double.valueOf(jTextFieldCantidad.getText()));
+  
         entityManager.getTransaction().begin(); 
         entityManager.persist(venta); 
         entityManager.getTransaction().commit();
@@ -620,8 +627,19 @@ public class Main extends javax.swing.JFrame {
         jTable2.setModel(ventaTableModel);
         jTable2.getColumnModel().getColumn(2).setCellRenderer(new PrecioRenderer());
         
+        total = listaVentas.getTotal();
+        NumberFormat formato = NumberFormat.getCurrencyInstance();
+        jLabel10.setText(String.valueOf(formato.format(total)));
+        
         
     }//GEN-LAST:event_jButtonAñadirActionPerformed
+
+    private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
+        if(jTabbedPane1.getSelectedIndex() == 1)
+            total = listaVentas.getTotal();
+            NumberFormat formato = NumberFormat.getCurrencyInstance();
+            jLabel10.setText(String.valueOf(formato.format(total)));
+    }//GEN-LAST:event_jTabbedPane1StateChanged
 
     /**
      * @param args the command line arguments

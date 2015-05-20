@@ -39,6 +39,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Producto.findByCantidadesDisponibles", query = "SELECT p FROM Producto p WHERE p.cantidadesDisponibles = :cantidadesDisponibles"),
     @NamedQuery(name = "Producto.findByDescripcion", query = "SELECT p FROM Producto p WHERE p.descripcion = :descripcion")})
 public class Producto implements Serializable {
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "Precio")
+    private Double precio;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,9 +57,6 @@ public class Producto implements Serializable {
     private String talla;
     @Column(name = "Color")
     private String color;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "Precio")
-    private BigDecimal precio;
     @Column(name = "CantidadesDisponibles")
     private Integer cantidadesDisponibles;
     @Column(name = "Descripcion")
@@ -116,13 +116,6 @@ public class Producto implements Serializable {
         this.color = color;
     }
 
-    public BigDecimal getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(BigDecimal precio) {
-        this.precio = precio;
-    }
 
     public Integer getCantidadesDisponibles() {
         return cantidadesDisponibles;
@@ -172,6 +165,14 @@ public class Producto implements Serializable {
     @Override
     public String toString() {
         return "tiendaropanba.Producto[ idProducto=" + idProducto + " ]";
+    }
+
+    public Double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(Double precio) {
+        this.precio = precio;
     }
     
 }

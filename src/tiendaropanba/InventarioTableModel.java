@@ -79,7 +79,7 @@ public class InventarioTableModel extends AbstractTableModel {
                 producto.setMarca(String.valueOf(aValue));
                 break;
             case 3:
-                producto.setPrecio(BigDecimal.valueOf(Double.valueOf((String)aValue)));
+                producto.setPrecio(Double.valueOf((String)aValue));
                 break;
         }
     }   

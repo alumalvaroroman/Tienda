@@ -13,5 +13,11 @@ public class ListaVentas {
         this.listaVentas = listaVentas;
     }
     
-    
+    public double getTotal(){
+        double total = 0;
+        for (int i = 0; i < listaVentas.size(); i++) {
+            total += listaVentas.get(i).getPrecio();
+        }
+        return total;
+    }
 }

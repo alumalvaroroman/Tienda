@@ -392,6 +392,11 @@ public class Main extends javax.swing.JFrame {
         });
 
         jButton1.setText("Finalizar venta");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel5.setText("TOTAL:");
@@ -399,6 +404,11 @@ public class Main extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 20)); // NOI18N
 
         jButtonNuevaVenta.setText("Nueva venta");
+        jButtonNuevaVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNuevaVentaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -682,6 +692,16 @@ public class Main extends javax.swing.JFrame {
                 break;
         }
     }//GEN-LAST:event_jComboBoxTallaActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        jComboBox1.setEnabled(false);
+        jTextFieldCantidad.setEditable(false);
+        jButtonAñadir.setEnabled(false);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButtonNuevaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevaVentaActionPerformed
+
+    }//GEN-LAST:event_jButtonNuevaVentaActionPerformed
 
     /**
      * @param args the command line arguments

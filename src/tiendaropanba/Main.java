@@ -5,8 +5,8 @@
  */
 package tiendaropanba;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
@@ -62,20 +62,24 @@ public class Main extends javax.swing.JFrame {
         consultaProductos = entityManager.createNamedQuery("Producto.findAll");
         listaProductos.setListaProductos(consultaProductos.getResultList());
         
-        entityManager = Persistence.createEntityManagerFactory("TiendaRopaNbaPU").createEntityManager();
-        consultaVentas = entityManager.createNamedQuery("Ventas.findAll");
-        listaVentas.setListaVentas(consultaVentas.getResultList());
+//        entityManager = Persistence.createEntityManagerFactory("TiendaRopaNbaPU").createEntityManager();
+//        consultaVentas = entityManager.createNamedQuery("Ventas.findAll");
+//        listaVentas.setListaVentas(consultaVentas.getResultList());
+        
+        listaVentas.setListaVentas(new ArrayList<Ventas>());
                 
         inventarioTableModel = new InventarioTableModel(listaProductos);
         jTable1.setModel(inventarioTableModel);
         jTable1.getColumnModel().getColumn(3).setCellRenderer(new PrecioRenderer());
+        
+        jTable1.getColumnModel().getColumn(0).setPreferredWidth(50);
         
         ventaTableModel = new VentasTableModel(listaVentas);
         jTable2.setModel(ventaTableModel);
         jTable2.getColumnModel().getColumn(2).setCellRenderer(new PrecioRenderer());
         
         ticketTableModel = new TicketTableModel(listaTicket);
-        jTable3.setModel(ticketTableModel);
+        //jTable3.setModel(ticketTableModel);
         
         jComboBox1.setModel(new DefaultComboBoxModel(listaProductos.getListaProductos().toArray()));
         jComboBox1.setRenderer(new ListaProductosRenderer());
@@ -157,9 +161,6 @@ public class Main extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jButtonNuevaVenta = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -463,38 +464,6 @@ public class Main extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Venta", jPanel2);
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jScrollPane4.setViewportView(jTable3);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(183, 183, 183)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(304, Short.MAX_VALUE))
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(217, Short.MAX_VALUE))
-        );
-
-        jTabbedPane1.addTab("Tickets", jPanel3);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -509,9 +478,112 @@ public class Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
+        if(jTabbedPane1.getSelectedIndex() == 1)
+        total = listaVentas.getTotal();
+        NumberFormat formato = NumberFormat.getCurrencyInstance();
+        jLabel10.setText(String.valueOf(formato.format(total)));
+    }//GEN-LAST:event_jTabbedPane1StateChanged
+
+    private void jButtonNuevaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevaVentaActionPerformed
+        int indexSelectedRow = jTable2.getSelectedRow();
+        
+        listaVentas.getListaVentas().clear();
+        ventaTableModel.fireTableRowsDeleted(indexSelectedRow, indexSelectedRow);
+        
+        jComboBox1.setEnabled(true);
+        jTextFieldCantidad.setEditable(true);
+        jButtonAñadir.setEnabled(true);
+        total = listaVentas.getTotal();
+        NumberFormat formato = NumberFormat.getCurrencyInstance();
+        jLabel10.setText(String.valueOf(formato.format(total)));
+    }//GEN-LAST:event_jButtonNuevaVentaActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        jComboBox1.setEnabled(false);
+        jTextFieldCantidad.setEditable(false);
+        jButtonAñadir.setEnabled(false);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButtonAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAñadirActionPerformed
+        Producto producto = (Producto)jComboBox1.getSelectedItem();
+
+        Ventas venta = new Ventas();
+
+        int cantidadProducto = Integer.valueOf(jTextFieldCantdDisponibles.getText());
+        int cantidadVenta = Integer.valueOf(jTextFieldCantidad.getText());
+
+        if (cantidadVenta > cantidadProducto) {
+            JOptionPane.showMessageDialog(this, "Solo hay disponibles " + cantidadProducto + " de este producto", "Atención", JOptionPane.INFORMATION_MESSAGE);
+        } else{
+            venta.setIdProducto(producto);
+            venta.setCantidad(Integer.valueOf(jTextFieldCantidad.getText()));
+            venta.setPrecio(producto.getPrecio() * Double.valueOf(jTextFieldCantidad.getText()));
+
+            entityManager.getTransaction().begin();
+            entityManager.persist(venta);
+            entityManager.getTransaction().commit();
+
+            listaVentas.getListaVentas().add(venta);
+            ventaTableModel.fireTableRowsUpdated(jTable2.getSelectedRow(), jTable2.getSelectedRow());
+
+            jTable2.setModel(ventaTableModel);
+            jTable2.getColumnModel().getColumn(2).setCellRenderer(new PrecioRenderer());
+
+            total = listaVentas.getTotal();
+            NumberFormat formato = NumberFormat.getCurrencyInstance();
+            jLabel10.setText(String.valueOf(formato.format(total)));
+        }
+
+    }//GEN-LAST:event_jButtonAñadirActionPerformed
+
+    private void jComboBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseClicked
+        jTable2.setModel(ventaTableModel);
+        jTable2.getColumnModel().getColumn(2).setCellRenderer(new PrecioRenderer());
+    }//GEN-LAST:event_jComboBox1MouseClicked
+
+    private void jComboBoxTallaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTallaActionPerformed
+        switch(jComboBoxTalla.getSelectedIndex()){
+            case 0:
+            jTextFieldTalla.setText("S");
+            break;
+            case 1:
+            jTextFieldTalla.setText("M");
+            break;
+            case 2:
+            jTextFieldTalla.setText("L");
+            break;
+            case 3:
+            jTextFieldTalla.setText("XL");
+            break;
+            case 4:
+            jTextFieldTalla.setText("XXL");
+            break;
+        }
+    }//GEN-LAST:event_jComboBoxTallaActionPerformed
+
+    private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
+        jTable1.setEnabled(true);
+
+        jTextFieldNombreProducto.setText("");
+        jTextFieldMarca.setText("");
+        jTextFieldTalla.setText("");
+        jTextFieldPrecio.setText(String.valueOf(""));
+        jTextFieldCantdDisponibles.setText("");
+        jTextAreaDescripcion.setText("");
+
+        jTextFieldNombreProducto.setEditable(false);
+        jTextFieldMarca.setEditable(false);
+        jComboBoxTalla.setEnabled(false);
+        jTextFieldTalla.setEditable(false);
+        jTextFieldPrecio.setEditable(false);
+        jTextFieldCantdDisponibles.setEditable(false);
+        jTextAreaDescripcion.setEditable(false);
+    }//GEN-LAST:event_jButtonCancelarActionPerformed
+
     private void jButtonNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevoActionPerformed
         modificado = false;
-        
+
         jTable1.setEnabled(false);
         jTextFieldNombreProducto.setEditable(true);
         jTextFieldMarca.setEditable(true);
@@ -527,14 +599,12 @@ public class Main extends javax.swing.JFrame {
         jTextFieldPrecio.setText(String.valueOf(0));
         jTextFieldCantdDisponibles.setText("");
         jTextAreaDescripcion.setText("");
-        
-        
 
     }//GEN-LAST:event_jButtonNuevoActionPerformed
 
     private void jButtonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarActionPerformed
         modificado = true;
-        
+
         jTable1.setEnabled(false);
         jTextFieldNombreProducto.setEditable(true);
         jTextFieldMarca.setEditable(true);
@@ -545,64 +615,12 @@ public class Main extends javax.swing.JFrame {
         jTextAreaDescripcion.setEditable(true);
     }//GEN-LAST:event_jButtonEditarActionPerformed
 
-    private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
-        
-        
-        int indexSelectedRow = jTable1.getSelectedRow();
-        
-        jTable1.setEnabled(true);
-
-        jTextFieldNombreProducto.setEditable(false);
-        jTextFieldMarca.setEditable(false);
-        jComboBoxTalla.setEnabled(false);
-        jTextFieldTalla.setEditable(false);
-        jTextFieldPrecio.setEditable(false);
-        jTextFieldCantdDisponibles.setEditable(false);
-        jTextAreaDescripcion.setEditable(false);
-        
-                
-        if (!modificado) {
-        Producto producto = new Producto();
-        
-        producto.setNombreProducto(jTextFieldNombreProducto.getText());
-        producto.setMarca(jTextFieldMarca.getText());
-        producto.setTalla(jTextFieldTalla.getText());
-        producto.setColor(null);
-        producto.setPrecio(Double.valueOf(jTextFieldPrecio.getText()));
-        producto.setCantidadesDisponibles(Integer.valueOf(jTextFieldCantdDisponibles.getText()));
-        producto.setDescripcion(jTextAreaDescripcion.getText());
-        
-        insertProducto(producto);
-        inventarioTableModel.fireTableRowsUpdated(jTable1.getSelectedRow(), jTable1.getSelectedRow());
-        inventarioTableModel.fireTableRowsInserted(listaProductos.getListaProductos().size()-1, listaProductos.getListaProductos().size()-1);
-            
-        } else{
-            Producto producto = listaProductos.getListaProductos().get(indexSelectedRow);
-            producto.setNombreProducto(jTextFieldNombreProducto.getText());
-            producto.setMarca(jTextFieldMarca.getText());
-            producto.setTalla(jTextFieldTalla.getText());
-            producto.setColor(null);
-            producto.setPrecio(Double.valueOf(jTextFieldPrecio.getText()));
-            producto.setCantidadesDisponibles(Integer.valueOf(jTextFieldCantdDisponibles.getText()));
-            producto.setDescripcion(jTextAreaDescripcion.getText());
-            
-            entityManager.getTransaction().begin(); 
-            entityManager.merge(producto); 
-            entityManager.getTransaction().commit();
-        }   
-        jComboBox1.setModel(new DefaultComboBoxModel(listaProductos.getListaProductos().toArray()));
-        jComboBox1.setRenderer(new ListaProductosRenderer());
-        
-        jTable1.getColumnModel().getColumn(3).setCellRenderer(new PrecioRenderer());
-        
-    }//GEN-LAST:event_jButtonGuardarActionPerformed
-
     private void jButtonBorrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarActionPerformed
         int respuesta = JOptionPane.showConfirmDialog(this, "¿Está seguro de que desea borrar este producto?", "Atención", JOptionPane.OK_CANCEL_OPTION);
-        
+
         if (JOptionPane.OK_OPTION == respuesta) {
             int indexSelectedRow = jTable1.getSelectedRow();
-        
+
             entityManager.getTransaction().begin();
             entityManager.remove(listaProductos.getListaProductos().get(indexSelectedRow));
             entityManager.getTransaction().commit();
@@ -610,27 +628,18 @@ public class Main extends javax.swing.JFrame {
             listaProductos.getListaProductos().remove(indexSelectedRow);
             inventarioTableModel.fireTableRowsDeleted(indexSelectedRow, indexSelectedRow);
         }
-        
+
         jComboBox1.setModel(new DefaultComboBoxModel(listaProductos.getListaProductos().toArray()));
         jComboBox1.setRenderer(new ListaProductosRenderer());
-        
+
     }//GEN-LAST:event_jButtonBorrarActionPerformed
 
-    private void jComboBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseClicked
-        jTable2.setModel(ventaTableModel);
-        jTable2.getColumnModel().getColumn(2).setCellRenderer(new PrecioRenderer());
-    }//GEN-LAST:event_jComboBox1MouseClicked
+    private void jButtonGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGuardarActionPerformed
 
-    private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
+        int indexSelectedRow = jTable1.getSelectedRow();
+
         jTable1.setEnabled(true);
 
-        jTextFieldNombreProducto.setText("");
-        jTextFieldMarca.setText("");
-        jTextFieldTalla.setText("");
-        jTextFieldPrecio.setText(String.valueOf(""));
-        jTextFieldCantdDisponibles.setText("");
-        jTextAreaDescripcion.setText("");
-        
         jTextFieldNombreProducto.setEditable(false);
         jTextFieldMarca.setEditable(false);
         jComboBoxTalla.setEnabled(false);
@@ -638,70 +647,40 @@ public class Main extends javax.swing.JFrame {
         jTextFieldPrecio.setEditable(false);
         jTextFieldCantdDisponibles.setEditable(false);
         jTextAreaDescripcion.setEditable(false);
-    }//GEN-LAST:event_jButtonCancelarActionPerformed
 
-    private void jButtonAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAñadirActionPerformed
-        Producto producto = (Producto)jComboBox1.getSelectedItem();
-        
-        Ventas venta = new Ventas();
+        if (!modificado) {
+            Producto producto = new Producto();
 
-        venta.setIdProducto(producto);
-        venta.setCantidad(Integer.valueOf(jTextFieldCantidad.getText()));
-        venta.setPrecio(producto.getPrecio() * Double.valueOf(jTextFieldCantidad.getText()));
-  
-        entityManager.getTransaction().begin(); 
-        entityManager.persist(venta); 
-        entityManager.getTransaction().commit();
-        
-        listaVentas.getListaVentas().add(venta);
-        ventaTableModel.fireTableRowsUpdated(jTable2.getSelectedRow(), jTable2.getSelectedRow());
-        
-        jTable2.setModel(ventaTableModel);
-        jTable2.getColumnModel().getColumn(2).setCellRenderer(new PrecioRenderer());
-        
-        total = listaVentas.getTotal();
-        NumberFormat formato = NumberFormat.getCurrencyInstance();
-        jLabel10.setText(String.valueOf(formato.format(total)));
-        
-        
-    }//GEN-LAST:event_jButtonAñadirActionPerformed
+            producto.setNombreProducto(jTextFieldNombreProducto.getText());
+            producto.setMarca(jTextFieldMarca.getText());
+            producto.setTalla(jTextFieldTalla.getText());
+            producto.setPrecio(Double.valueOf(jTextFieldPrecio.getText()));
+            producto.setCantidadesDisponibles(Integer.valueOf(jTextFieldCantdDisponibles.getText()));
+            producto.setDescripcion(jTextAreaDescripcion.getText());
 
-    private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
-        if(jTabbedPane1.getSelectedIndex() == 1)
-            total = listaVentas.getTotal();
-            NumberFormat formato = NumberFormat.getCurrencyInstance();
-            jLabel10.setText(String.valueOf(formato.format(total)));
-    }//GEN-LAST:event_jTabbedPane1StateChanged
+            insertProducto(producto);
+            inventarioTableModel.fireTableRowsUpdated(jTable1.getSelectedRow(), jTable1.getSelectedRow());
+            inventarioTableModel.fireTableRowsInserted(listaProductos.getListaProductos().size()-1, listaProductos.getListaProductos().size()-1);
 
-    private void jComboBoxTallaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTallaActionPerformed
-        switch(jComboBoxTalla.getSelectedIndex()){
-            case 0:
-                jTextFieldTalla.setText("S");
-                break;
-            case 1:
-                jTextFieldTalla.setText("M");
-                break;
-            case 2:
-                jTextFieldTalla.setText("L");
-                break;
-            case 3:
-                jTextFieldTalla.setText("XL");
-                break;
-            case 4:
-                jTextFieldTalla.setText("XXL");
-                break;
+        } else{
+            Producto producto = listaProductos.getListaProductos().get(indexSelectedRow);
+            producto.setNombreProducto(jTextFieldNombreProducto.getText());
+            producto.setMarca(jTextFieldMarca.getText());
+            producto.setTalla(jTextFieldTalla.getText());
+            producto.setPrecio(Double.valueOf(jTextFieldPrecio.getText()));
+            producto.setCantidadesDisponibles(Integer.valueOf(jTextFieldCantdDisponibles.getText()));
+            producto.setDescripcion(jTextAreaDescripcion.getText());
+
+            entityManager.getTransaction().begin();
+            entityManager.merge(producto);
+            entityManager.getTransaction().commit();
         }
-    }//GEN-LAST:event_jComboBoxTallaActionPerformed
+        jComboBox1.setModel(new DefaultComboBoxModel(listaProductos.getListaProductos().toArray()));
+        jComboBox1.setRenderer(new ListaProductosRenderer());
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        jComboBox1.setEnabled(false);
-        jTextFieldCantidad.setEditable(false);
-        jButtonAñadir.setEnabled(false);
-    }//GEN-LAST:event_jButton1ActionPerformed
+        jTable1.getColumnModel().getColumn(3).setCellRenderer(new PrecioRenderer());
 
-    private void jButtonNuevaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevaVentaActionPerformed
-
-    }//GEN-LAST:event_jButtonNuevaVentaActionPerformed
+    }//GEN-LAST:event_jButtonGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -763,15 +742,12 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelImagen;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
     private javax.swing.JTextArea jTextAreaDescripcion;
     private javax.swing.JTextField jTextFieldCantdDisponibles;
     private javax.swing.JTextField jTextFieldCantidad;

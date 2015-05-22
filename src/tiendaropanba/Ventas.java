@@ -6,7 +6,6 @@
 package tiendaropanba;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,10 +32,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Ventas.findByCantidad", query = "SELECT v FROM Ventas v WHERE v.cantidad = :cantidad"),
     @NamedQuery(name = "Ventas.findByPrecio", query = "SELECT v FROM Ventas v WHERE v.precio = :precio")})
 public class Ventas implements Serializable {
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "Precio")
-    private Double precio;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,6 +40,9 @@ public class Ventas implements Serializable {
     private Integer idVentas;
     @Column(name = "Cantidad")
     private Integer cantidad;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "Precio")
+    private Double precio;
     @JoinColumn(name = "Id_Producto", referencedColumnName = "IdProducto")
     @ManyToOne
     private Producto idProducto;
@@ -72,6 +70,13 @@ public class Ventas implements Serializable {
         this.cantidad = cantidad;
     }
 
+    public Double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(Double precio) {
+        this.precio = precio;
+    }
 
     public Producto getIdProducto() {
         return idProducto;
@@ -104,14 +109,6 @@ public class Ventas implements Serializable {
     @Override
     public String toString() {
         return "tiendaropanba.Ventas[ idVentas=" + idVentas + " ]";
-    }
-
-    public Double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(Double precio) {
-        this.precio = precio;
     }
     
 }

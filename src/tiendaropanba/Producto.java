@@ -6,7 +6,6 @@
 package tiendaropanba;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -34,14 +33,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Producto.findByNombreProducto", query = "SELECT p FROM Producto p WHERE p.nombreProducto = :nombreProducto"),
     @NamedQuery(name = "Producto.findByMarca", query = "SELECT p FROM Producto p WHERE p.marca = :marca"),
     @NamedQuery(name = "Producto.findByTalla", query = "SELECT p FROM Producto p WHERE p.talla = :talla"),
-    @NamedQuery(name = "Producto.findByColor", query = "SELECT p FROM Producto p WHERE p.color = :color"),
     @NamedQuery(name = "Producto.findByPrecio", query = "SELECT p FROM Producto p WHERE p.precio = :precio"),
     @NamedQuery(name = "Producto.findByCantidadesDisponibles", query = "SELECT p FROM Producto p WHERE p.cantidadesDisponibles = :cantidadesDisponibles"),
     @NamedQuery(name = "Producto.findByDescripcion", query = "SELECT p FROM Producto p WHERE p.descripcion = :descripcion")})
 public class Producto implements Serializable {
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "Precio")
-    private Double precio;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,11 +47,11 @@ public class Producto implements Serializable {
     private String nombreProducto;
     @Column(name = "Marca")
     private String marca;
-    @Basic(optional = false)
     @Column(name = "Talla")
     private String talla;
-    @Column(name = "Color")
-    private String color;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "Precio")
+    private Double precio;
     @Column(name = "CantidadesDisponibles")
     private Integer cantidadesDisponibles;
     @Column(name = "Descripcion")
@@ -69,11 +64,6 @@ public class Producto implements Serializable {
 
     public Producto(Integer idProducto) {
         this.idProducto = idProducto;
-    }
-
-    public Producto(Integer idProducto, String talla) {
-        this.idProducto = idProducto;
-        this.talla = talla;
     }
 
     public Integer getIdProducto() {
@@ -108,14 +98,13 @@ public class Producto implements Serializable {
         this.talla = talla;
     }
 
-    public String getColor() {
-        return color;
+    public Double getPrecio() {
+        return precio;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setPrecio(Double precio) {
+        this.precio = precio;
     }
-
 
     public Integer getCantidadesDisponibles() {
         return cantidadesDisponibles;
@@ -165,14 +154,6 @@ public class Producto implements Serializable {
     @Override
     public String toString() {
         return "tiendaropanba.Producto[ idProducto=" + idProducto + " ]";
-    }
-
-    public Double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(Double precio) {
-        this.precio = precio;
     }
     
 }

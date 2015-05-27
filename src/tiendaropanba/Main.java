@@ -543,7 +543,7 @@ public class Main extends javax.swing.JFrame {
         try{
             conexion = DriverManager.getConnection("jdbc:mysql://localhost/Tienda","root","");
             Statement stmt = conexion.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Ventas WHERE ORDER BY IdVentas DESC LIMIT 1");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Ventas ORDER BY IdVentas DESC LIMIT 1");
         
         
             try {

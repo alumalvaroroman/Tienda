@@ -5,8 +5,18 @@
  */
 package tiendaropanba;
 
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
@@ -15,6 +25,13 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 import tiendaropanba.renderes.ListaProductosRenderer;
 import tiendaropanba.renderes.PrecioRenderer;
 
@@ -150,6 +167,7 @@ public class Main extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButtonCancelar = new javax.swing.JButton();
         jComboBoxTalla = new javax.swing.JComboBox();
+        jComboBoxTalla2 = new javax.swing.JComboBox();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
@@ -157,7 +175,7 @@ public class Main extends javax.swing.JFrame {
         jTextFieldCantidad = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButtonAñadir = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        jButtonFinalizarVenta = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jButtonNuevaVenta = new javax.swing.JButton();
@@ -258,6 +276,14 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        jComboBoxTalla2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "4", "5", "6", "7" }));
+        jComboBoxTalla2.setEnabled(false);
+        jComboBoxTalla2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxTalla2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -302,7 +328,9 @@ public class Main extends javax.swing.JFrame {
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jTextFieldTalla, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jComboBoxTalla, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jComboBoxTalla, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jComboBoxTalla2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jTextFieldNombreProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(127, 127, 127)))
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -318,12 +346,12 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(jButtonNuevo)
                         .addComponent(jButtonEditar))
                     .addComponent(jButtonBorrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabelImagen, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
+                        .addComponent(jLabelImagen, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -336,7 +364,8 @@ public class Main extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(jTextFieldTalla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBoxTalla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jComboBoxTalla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBoxTalla2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -382,6 +411,11 @@ public class Main extends javax.swing.JFrame {
                 jComboBox1MouseClicked(evt);
             }
         });
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Cantidad:");
 
@@ -392,10 +426,10 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Finalizar venta");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonFinalizarVenta.setText("Finalizar venta");
+        jButtonFinalizarVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonFinalizarVentaActionPerformed(evt);
             }
         });
 
@@ -432,7 +466,7 @@ public class Main extends javax.swing.JFrame {
                         .addGap(39, 39, 39)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addComponent(jButton1)
+                            .addComponent(jButtonFinalizarVenta)
                             .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jButtonNuevaVenta))
                 .addContainerGap(127, Short.MAX_VALUE))
@@ -449,7 +483,7 @@ public class Main extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(39, 39, 39)
-                        .addComponent(jButton1))
+                        .addComponent(jButtonFinalizarVenta))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -472,7 +506,7 @@ public class Main extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
         );
 
         pack();
@@ -497,13 +531,36 @@ public class Main extends javax.swing.JFrame {
         total = listaVentas.getTotal();
         NumberFormat formato = NumberFormat.getCurrencyInstance();
         jLabel10.setText(String.valueOf(formato.format(total)));
+        jTextFieldCantidad.setText("");
     }//GEN-LAST:event_jButtonNuevaVentaActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonFinalizarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFinalizarVentaActionPerformed
         jComboBox1.setEnabled(false);
         jTextFieldCantidad.setEditable(false);
         jButtonAñadir.setEnabled(false);
-    }//GEN-LAST:event_jButton1ActionPerformed
+        
+        Connection conexion = null;
+        try{
+            conexion = DriverManager.getConnection("jdbc:mysql://localhost/Tienda","root","");
+            Statement stmt = conexion.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Ventas WHERE ORDER BY IdVentas DESC LIMIT 1");
+        
+        
+            try {
+                Map parameters = new HashMap();
+                JasperReport jasperReport =
+                        JasperCompileManager.compileReport(
+                        "C:/Users/Alvaro/JaspersoftWorkspace/TiendaRopaNBA/Blank_A4.jrxml");
+                JasperPrint jasperPrint = JasperFillManager.fillReport(
+                        jasperReport, parameters, new JRResultSetDataSource(rs));
+                JasperViewer.viewReport(jasperPrint, false);
+            } catch (JRException ex) {
+                ex.printStackTrace();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+    }//GEN-LAST:event_jButtonFinalizarVentaActionPerformed
 
     private void jButtonAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAñadirActionPerformed
         Producto producto = (Producto)jComboBox1.getSelectedItem();
@@ -575,6 +632,7 @@ public class Main extends javax.swing.JFrame {
         jTextFieldNombreProducto.setEditable(false);
         jTextFieldMarca.setEditable(false);
         jComboBoxTalla.setEnabled(false);
+        jComboBoxTalla2.setEnabled(false);
         jTextFieldTalla.setEditable(false);
         jTextFieldPrecio.setEditable(false);
         jTextFieldCantdDisponibles.setEditable(false);
@@ -588,6 +646,7 @@ public class Main extends javax.swing.JFrame {
         jTextFieldNombreProducto.setEditable(true);
         jTextFieldMarca.setEditable(true);
         jComboBoxTalla.setEnabled(true);
+        jComboBoxTalla2.setEnabled(true);
         jTextFieldTalla.setEditable(false);
         jTextFieldPrecio.setEditable(true);
         jTextFieldCantdDisponibles.setEditable(true);
@@ -609,6 +668,7 @@ public class Main extends javax.swing.JFrame {
         jTextFieldNombreProducto.setEditable(true);
         jTextFieldMarca.setEditable(true);
         jComboBoxTalla.setEnabled(true);
+        jComboBoxTalla2.setEnabled(true);
         jTextFieldTalla.setEditable(false);
         jTextFieldPrecio.setEditable(true);
         jTextFieldCantdDisponibles.setEditable(true);
@@ -643,6 +703,7 @@ public class Main extends javax.swing.JFrame {
         jTextFieldNombreProducto.setEditable(false);
         jTextFieldMarca.setEditable(false);
         jComboBoxTalla.setEnabled(false);
+        jComboBoxTalla2.setEnabled(false);
         jTextFieldTalla.setEditable(false);
         jTextFieldPrecio.setEditable(false);
         jTextFieldCantdDisponibles.setEditable(false);
@@ -682,6 +743,27 @@ public class Main extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButtonGuardarActionPerformed
 
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jComboBoxTalla2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTalla2ActionPerformed
+        switch(jComboBoxTalla2.getSelectedIndex()){
+            case 0:
+                jTextFieldTalla.setText("4");
+            break;
+            case 1:
+                jTextFieldTalla.setText("5");
+            break;
+            case 2:
+                jTextFieldTalla.setText("6");
+            break;
+            case 3:
+                jTextFieldTalla.setText("7");
+            break;
+        }
+    }//GEN-LAST:event_jComboBoxTalla2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -719,16 +801,17 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonAñadir;
     private javax.swing.JButton jButtonBorrar;
     private javax.swing.JButton jButtonCancelar;
     private javax.swing.JButton jButtonEditar;
+    private javax.swing.JButton jButtonFinalizarVenta;
     private javax.swing.JButton jButtonGuardar;
     private javax.swing.JButton jButtonNuevaVenta;
     private javax.swing.JButton jButtonNuevo;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBoxTalla;
+    private javax.swing.JComboBox jComboBoxTalla2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
